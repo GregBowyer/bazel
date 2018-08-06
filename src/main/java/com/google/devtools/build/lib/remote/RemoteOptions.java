@@ -30,7 +30,7 @@ public final class RemoteOptions extends OptionsBase {
     documentationCategory = OptionDocumentationCategory.UNCATEGORIZED,
     effectTags = {OptionEffectTag.UNKNOWN},
     help =
-        "A base URL of a HTTP caching service. http://, https:// and s3:// are supported. BLOBs are "
+        "A base URL of a HTTP caching service. Both http:// https:// are supported. BLOBs are "
             + "stored with PUT and retrieved with GET. See remote/README.md for more information."
   )
   public String remoteHttpCache;
@@ -53,7 +53,7 @@ public final class RemoteOptions extends OptionsBase {
       documentationCategory = OptionDocumentationCategory.UNCATEGORIZED,
       effectTags = {OptionEffectTag.UNKNOWN},
       help =
-          "The specific region for an S3 bucket, used as a HTTP rest cache"
+          "The specific region for an S3 bucket, used as a HTTP REST cache"
               + ". See remote/README.md for more information."
   )
   public String awsS3Region;

@@ -39,8 +39,6 @@ import javax.annotation.Nullable;
  */
 public final class SimpleBlobStoreFactory {
 
-  private static final String S3_SERVICE = "s3";
-
   private SimpleBlobStoreFactory() {}
 
   public static SimpleBlobStore createRest(RemoteOptions options, AuthAndTLSOptions authAndTLSOptions) {
@@ -69,11 +67,11 @@ public final class SimpleBlobStoreFactory {
     final AWSCredentialsProvider awsAuth = AwsAuthUtils.newCredentials(authAndTLSOptions);
 
     if (googlAuth != null && awsAuth != null) {
-      throw new IOException("Both google and AWS credentials provided for remote caching. Only one should be used");
+      throw new IOException("Both Google and AWS credentials provided for remote caching. Only one should be used");
     } else if (googlAuth != null) {
       return HttpCredentialsAdapter.fromGoogleCredentials(googlAuth);
     } else if (awsAuth != null) {
-      return HttpCredentialsAdapter.fromAwsCredentails(options.awsS3Region, options.remoteHttpCache, S3_SERVICE, awsAuth);
+      return HttpCredentialsAdapter.fromAwsCredentails(options.awsS3Region, options.remoteHttpCache, "s3", awsAuth);
     } else {
       return null;
     }
