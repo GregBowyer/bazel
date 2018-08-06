@@ -314,6 +314,7 @@ public class HttpBlobStoreTest {
       getFromFuture(blobStore.get("key", out));
       assertThat(out.toString(Charsets.US_ASCII.name())).isEqualTo("File Contents");
       verify(credentials, times(1)).refresh();
+      verify(credentials, times(1)).refreshCredentials();
       verify(credentials, times(2)).setRequestHeaders(any(HttpRequest.class));
       verify(credentials, times(2)).hasRequestHeaders();
       // The caller is responsible to the close the stream.
@@ -342,6 +343,7 @@ public class HttpBlobStoreTest {
       ByteArrayInputStream in = new ByteArrayInputStream(data);
       blobStore.put("key", data.length, in);
       verify(credentials, times(1)).refresh();
+      verify(credentials, times(1)).refreshCredentials();
       verify(credentials, times(2)).setRequestHeaders(any(HttpRequest.class));
       verify(credentials, times(2)).hasRequestHeaders();
       verifyNoMoreInteractions(credentials);
@@ -416,11 +418,11 @@ public class HttpBlobStoreTest {
         .when(credentials)
         .refresh();
 
-    HttpCredentialsAdapter credentialsAdapter = Mockito.spy(HttpCredentialsAdapter.class);
+    HttpCredentialsAdapter credentialsAdapter = Mockito.spy(HttpCredentialsAdapter.fromGoogleCredentials(credentials));
 
     Mockito.doAnswer(
         (mock) -> {
-          credentials.refresh();
+          credentialsAdapter.refresh();
           return null;
         })
         .when(credentialsAdapter)
