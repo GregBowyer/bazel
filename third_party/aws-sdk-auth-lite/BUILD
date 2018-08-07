@@ -7,7 +7,7 @@ filegroup(
 )
 
 java_library(
-    name = "aws-auth-sdk-lite",
+    name = "aws-sdk-auth-lite",
     srcs = glob(["**/*.java"]),
     visibility = ["//visibility:public"],
     deps = [

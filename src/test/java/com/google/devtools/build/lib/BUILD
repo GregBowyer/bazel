@@ -1271,7 +1271,7 @@ java_test(
         "//third_party:auth",
         "//third_party:mockito",
         "//third_party:netty",
-        "//third_party/aws-sdk-auth-lite:aws-auth-sdk-lite",
+        "//third_party/aws-sdk-auth-lite",
         "//third_party/grpc:grpc-jar",
         "//third_party/protobuf:protobuf_java",
         "@googleapis//:google_bytestream_bytestream_java_grpc",

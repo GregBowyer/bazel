@@ -205,7 +205,7 @@ java_import(
     runtime_deps = [
         ":api_client",
         ":guava",
-        "//third_party/aws-sdk-auth-lite:aws-auth-sdk-lite",
+        "//third_party/aws-sdk-auth-lite",
     ],
 )
 

@@ -22,6 +22,6 @@ java_library(
         "//third_party:auth",
         "//third_party:guava",
         "//third_party:netty",
-        "//third_party/aws-sdk-auth-lite:aws-auth-sdk-lite",
+        "//third_party/aws-sdk-auth-lite",
     ],
 )
