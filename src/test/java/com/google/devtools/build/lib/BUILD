@@ -1242,13 +1242,14 @@ java_test(
 java_test(
     name = "remote-tests",
     srcs = glob(["remote/**/*.java"]),
-    data = [
+    resources = [
         "//third_party/aws-sig-v4-test-suite:testdata",
     ],
     test_class = "com.google.devtools.build.lib.AllTests",
     deps = [
         ":analysis_testutil",
         ":foundations_testutil",
+        ":packages_testutil",
         ":guava_junit_truth",
         ":test_runner",
         ":testutil",

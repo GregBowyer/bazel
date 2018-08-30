@@ -20,8 +20,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
-import com.google.common.io.Files;
-import com.google.common.io.MoreFiles;
+import com.google.devtools.build.lib.packages.util.ResourceLoader;
 import io.netty.handler.codec.http.*;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -55,6 +54,7 @@ public class AwsHttpCredentialsAdapterTest {
   private static final String TEST_REGION = "us-east-1";
   private static final String TEST_SERVICE = "service";
 
+  private static final Splitter NEWLINE_SPLITTER = Splitter.on('\n').omitEmptyStrings();
   private static final Splitter REQLINE_SPLITTER = Splitter.on(CharMatcher.whitespace());
   private static final Splitter HDR_SPLITTER = Splitter.on(":");
 
@@ -71,8 +71,6 @@ public class AwsHttpCredentialsAdapterTest {
     final String vectorName = Iterables.getLast(vectorPathElems);
 
     Path testPath = Paths.get(
-        System.getenv("TEST_SRCDIR"),
-        "io_bazel",
         "third_party",
         "aws-sig-v4-test-suite"
     );
@@ -83,13 +81,11 @@ public class AwsHttpCredentialsAdapterTest {
 
     final Path basePath = testPath;
 
-    final List<String> rawRequest = Files.readLines(basePath.resolve(vectorName + ".req").toFile(), Charsets.UTF_8);
+    final List<String> rawRequest = NEWLINE_SPLITTER.splitToList(ResourceLoader.readFromResources(basePath.resolve(vectorName + ".req").toString()));
     final Function<String, String> readTestData = (name) -> {
       try {
         final Path testFile = basePath.resolve(vectorName + "." + name);
-        return MoreFiles
-            .asCharSource(testFile, Charsets.UTF_8)
-            .read();
+        return ResourceLoader.readFromResources(testFile.toString());
       } catch (final IOException ioe) {
         throw new RuntimeException(ioe);
       }
