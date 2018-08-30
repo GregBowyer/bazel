@@ -22,12 +22,11 @@ import com.google.common.base.*;
 import com.google.common.collect.*;
 import com.google.common.escape.Escaper;
 import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 import com.google.common.net.HttpHeaders;
 import com.google.common.net.UrlEscapers;
 import io.netty.handler.codec.http.HttpRequest;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URI;
 import java.security.InvalidKeyException;
@@ -56,7 +55,6 @@ public class AwsHttpCredentialsAdapter extends HttpCredentialsAdapter {
   private static final List<String> UNSIGNED_PAYLOAD_SIG = ImmutableList.of("UNSIGNED-PAYLOAD");
   private static final String BARE_PAYLOAD_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
 
-  private static final String SIGNING_ALGO = "HmacSHA256";
   private static final String AWS4_REQUEST = "aws4_request";
 
   private static final DateTimeFormatter iso8601DateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(UTC);
@@ -477,15 +475,7 @@ public class AwsHttpCredentialsAdapter extends HttpCredentialsAdapter {
   }
 
   byte[] hmacSHA256(final byte[] key, final byte[] toSign) throws IOException {
-    try {
-      final Mac mac = Mac.getInstance(SIGNING_ALGO);
-      mac.init(new SecretKeySpec(key, SIGNING_ALGO));
-      return mac.doFinal(toSign);
-    } catch (NoSuchAlgorithmException e) {
-      throw new IOException("Could not initialise crypto algorithms", e);
-    } catch (InvalidKeyException e) {
-      throw new IOException("Provided secret key was invalid for crypto purposes", e);
-    }
+    return Hashing.hmacSha256(key).hashBytes(toSign).asBytes();
   }
 }
 
