@@ -29,8 +29,6 @@ import org.junit.runners.JUnit4;
 
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -67,25 +65,16 @@ public class AwsHttpCredentialsAdapterTest {
   );
 
   private TestVector parseTestVector(final AWSCredentialsProvider creds, final String vectorPath) throws Exception {
-    List<String> vectorPathElems = Splitter.on('/').splitToList(vectorPath);
-    final String vectorName = Iterables.getLast(vectorPathElems);
+    final String vectorName = vectorPath.substring(vectorPath.lastIndexOf('/') + 1);
 
-    Path testPath = Paths.get(
-        "third_party",
-        "aws-sig-v4-test-suite"
-    );
+    String testPath = "third_party/aws-sig-v4-test-suite/" + vectorPath;
 
-    for (final String vectorPathElem : vectorPathElems) {
-      testPath = testPath.resolve(vectorPathElem);
-    }
-
-    final Path basePath = testPath;
-
-    final List<String> rawRequest = NEWLINE_SPLITTER.splitToList(ResourceLoader.readFromResources(basePath.resolve(vectorName + ".req").toString()));
+    final List<String> rawRequest = NEWLINE_SPLITTER.splitToList(ResourceLoader.readFromResources(
+      testPath + "/" + vectorName + ".req"));
     final Function<String, String> readTestData = (name) -> {
       try {
-        final Path testFile = basePath.resolve(vectorName + "." + name);
-        return ResourceLoader.readFromResources(testFile.toString());
+        final String testFile = testPath + "/" + vectorName + "." + name;
+        return ResourceLoader.readFromResources(testFile);
       } catch (final IOException ioe) {
         throw new RuntimeException(ioe);
       }
