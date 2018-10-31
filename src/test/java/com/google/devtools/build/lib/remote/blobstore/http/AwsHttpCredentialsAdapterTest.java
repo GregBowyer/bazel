@@ -52,7 +52,7 @@ public class AwsHttpCredentialsAdapterTest {
   private static final String TEST_REGION = "us-east-1";
   private static final String TEST_SERVICE = "service";
 
-  private static final String NEWLINE = System.lineSeparator();
+  private static final String NEWLINE = "\n";
   private static final Splitter NEWLINE_SPLITTER = Splitter.on(NEWLINE).omitEmptyStrings();
   private static final Splitter REQLINE_SPLITTER = Splitter.on(CharMatcher.whitespace());
   private static final Splitter HDR_SPLITTER = Splitter.on(":");
