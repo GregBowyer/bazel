@@ -163,12 +163,29 @@ public final class RemoteModule extends BlazeModule {
         interceptors.add(new LoggingInterceptor(rpcLogFile, env.getRuntime().getClock()));
       }
 
-      ReferenceCountedChannel cacheChannel = null;
-      ReferenceCountedChannel execChannel = null;
-      RemoteRetrier rpcRetrier = null;
-      // Initialize the gRPC channels and capabilities service, when relevant.
-      if (!Strings.isNullOrEmpty(remoteOptions.remoteExecutor)) {
-        execChannel =
+      final RemoteRetrier executeRetrier;
+      final AbstractRemoteActionCache cache;
+      if (enableBlobStoreCache) {
+        Retrier retrier =
+            new Retrier(
+                () -> Retrier.RETRIES_DISABLED,
+                (e) -> false,
+                retryScheduler,
+                Retrier.ALLOW_ALL_CALLS);
+        executeRetrier = null;
+        cache =
+            new SimpleBlobStoreActionCache(
+                remoteOptions,
+                SimpleBlobStoreFactory.create(
+                    remoteOptions,
+                    authAndTlsOptions,
+                    env.getWorkingDirectory()),
+                retrier,
+                digestUtil);
+      } else if (enableGrpcCache || remoteOptions.remoteExecutor != null) {
+        // If a remote executor but no remote cache is specified, assume both at the same target.
+        String target = enableGrpcCache ? remoteOptions.remoteCache : remoteOptions.remoteExecutor;
+        ReferenceCountedChannel channel =
             new ReferenceCountedChannel(
                 GoogleAuthUtils.newChannel(
                     remoteOptions.remoteExecutor,
