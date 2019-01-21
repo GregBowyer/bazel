@@ -15,7 +15,7 @@ package com.google.devtools.build.lib.remote.blobstore.http;
 
 import static com.google.common.base.Preconditions.checkState;
 
-import com.google.auth.Credentials;
+import com.google.devtools.build.lib.runtime.AuthHeadersProvider;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.DefaultHttpRequest;
@@ -41,8 +41,8 @@ final class HttpUploadHandler extends AbstractHttpHandler<FullHttpResponse> {
   /** the size of the data being uploaded in bytes */
   private long contentLength;
 
-  public HttpUploadHandler(Credentials credentials) {
-    super(credentials);
+  public HttpUploadHandler(AuthHeadersProvider authHeadersProvider) {
+    super(authHeadersProvider);
   }
 
   @SuppressWarnings("FutureReturnValueIgnored")
